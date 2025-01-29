@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Information - Gautam Kothari</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header p {
+            margin: 5px 0 0;
+        }
+
+        .search-container {
+            margin: 20px;
+            text-align: center;
+        }
+
+        #searchInput {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Country Information</h1>
+        <p>Publisher: Gautam Kothari</p>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for a country..." oninput="searchCountry()">
+    </div>
+
+    <table id="countryTable">
+        <thead>
+            <tr>
+                <th>Country</th>
+                <th>Population</th>
+                <th>Area (km²)</th>
+                <th>GDP (USD)</th>
+                <th>GDP per Capita (USD)</th>
+                <th>PPP (USD)</th>
+                <th>Military Rank</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Country data will be populated here by JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        // Sample data for a few countries
+        const countries = [
+            { name: "United States", population: 331002651, area: 9372610, gdp: 21139700, gdpPerCapita: 63414, ppp: 21139700, militaryRank: 1 },
+            { name: "China", population: 1439323776, area: 9388211, gdp: 14722731, gdpPerCapita: 10410, ppp: 25227, militaryRank: 3 },
+            { name: "India", population: 1380004385, area: 2973190, gdp: 2875142, gdpPerCapita: 2100, ppp: 10159, militaryRank: 4 },
+            { name: "Germany", population: 83783942, area: 357022, gdp: 3845630, gdpPerCapita: 46123, ppp: 45400, militaryRank: 7 },
+            { name: "United Kingdom", population: 67886011, area: 242495, gdp: 2827113, gdpPerCapita: 42330, ppp: 29700, militaryRank: 8 },
+            { name: "Japan", population: 126476461, area: 377975, gdp: 5081770, gdpPerCapita: 40113, ppp: 52700, militaryRank: 5 },
+            { name: "France", population: 65273511, area: 551695, gdp: 2937470, gdpPerCapita: 45041, ppp: 44000, militaryRank: 6 },
+            { name: "Brazil", population: 212559417, area: 8515767, gdp: 1839755, gdpPerCapita: 8697, ppp: 14100, militaryRank: 10 },
+            { name: "Russia", population: 145934462, area: 17098242, gdp: 1699870, gdpPerCapita: 11601, ppp: 28000, militaryRank: 2 },
+            { name: "Canada", population: 37742154, area: 9984670, gdp: 1643407, gdpPerCapita: 43582, ppp: 48000, militaryRank: 20 },
+            { name: "Mexico", population: 127575529, area: 1964375, gdp: 1153210, gdpPerCapita: 20915, ppp: 24300, militaryRank: 15 },
+            { name: "South Korea", population: 51870677, area: 100363, gdp: 1637623, gdpPerCapita: 31571, ppp: 41100, militaryRank: 11 },
+            { name: "Italy", population: 60457428, area: 301338, gdp: 1986632, gdpPerCapita: 32962, ppp: 38200, militaryRank: 12 },
+            { name: "Australia", population: 25887600, area: 7692024, gdp: 1225640, gdpPerCapita: 47574, ppp: 0, militaryRank: 19 },
+            { name: "Spain", population: 46351045, area: 505992, gdp: 1436338, gdpPerCapita: 31051, ppp: 35400, militaryRank: 13 },
+            { name: "Indonesia", population: 273523615, area: 1905097, gdp: 1114117, gdpPerCapita: 4074, ppp: 13300, militaryRank: 16 },
+            { name: "Turkey", population: 84213467, area: 783562, gdp: 2414386, gdpPerCapita: 28713, ppp: 28100, militaryRank: 9 },
+            { name: "Poland", population: 37886739, area: 312679, gdp: 546672, gdpPerCapita: 14465, ppp: 0, militaryRank: 22 },
+            { name: "Thailand", population: 69428522, area: 513120, gdp: 513115, gdpPerCapita: 7385, ppp: 0, militaryRank: 25 },
+            { name: "Israel", population: 9307148, area: 22072, gdp: 383947, gdpPerCapita: 41432, ppp: 0, militaryRank: 17 },
+            { name: "Sweden", population: 10330000, area: 449964, gdp: 528000, gdpPerCapita: 51058, ppp: 0, militaryRank: 30 },
+            { name: "Nigeria", population: 202915907, area: 923768, gdp: 247217, gdpPerCapita: 1219, ppp: 0, militaryRank: 40 },
+            { name: "Switzerland", population: 8570148, area: 41290, gdp: 824716, gdpPerCapita: 96223, ppp: 0, militaryRank: 50 },
+            { name: "Norway", population: 5377005, area: 323802, gdp: 513953, gdpPerCapita: 95622, ppp: 0, militaryRank: 35 },
+            { name: "Ireland", population: 4937176, area: 70273, gdp: 398000, gdpPerCapita: 80604, ppp: 0, militaryRank: 60 }
+        ];
+
+        const tableBody = document.querySelector("#countryTable tbody");
+
+        // Function to populate the table with country data
+        function populateTable(data) {
+            tableBody.innerHTML = ""; // Clear existing rows
+            data.forEach(country => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${country.name}</td>
+                    <td>${country.population.toLocaleString()}</td>
+                    <td>${country.area.toLocaleString()}</td>
+                    <td>${country.gdp.toLocaleString()}</td>
+                    <td>${country.gdpPerCapita.toLocaleString()}</td>
+                    <td>${country.ppp.toLocaleString()}</td>
+                    <td>${country.militaryRank}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to search for a country
+        function searchCountry() {
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            const filteredCountries = countries.filter(country => country.name.toLowerCase().includes(searchTerm));
+            populateTable(filteredCountries);
+        }
+
+        // Populate the table with all countries on page load
+        populateTable(countries);
+    </script>
+</body>
+</html>
